@@ -177,20 +177,20 @@ func (k *KeyV3) ResetPrivateKey() {
 
 func newKeyFromECDSAWithAddress(privateKeyECDSA *ecdsa.PrivateKey, address common.Address) Key {
 	id := uuid.NewRandom()
-	key := &KeyV4{
-		Id:          id,
-		Address:     address,
-		PrivateKeys: [][]*ecdsa.PrivateKey{{privateKeyECDSA}},
+	key := &KeyV3{
+		Id:         id,
+		Address:    address,
+		PrivateKey: privateKeyECDSA,
 	}
 	return key
 }
 
 func newKeyFromECDSA(privateKeyECDSA *ecdsa.PrivateKey) Key {
 	id := uuid.NewRandom()
-	key := &KeyV4{
-		Id:          id,
-		Address:     crypto.PubkeyToAddress(privateKeyECDSA.PublicKey),
-		PrivateKeys: [][]*ecdsa.PrivateKey{{privateKeyECDSA}},
+	key := &KeyV3{
+		Id:         id,
+		Address:    crypto.PubkeyToAddress(privateKeyECDSA.PublicKey),
+		PrivateKey: privateKeyECDSA,
 	}
 	return key
 }

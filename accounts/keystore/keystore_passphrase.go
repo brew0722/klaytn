@@ -192,13 +192,13 @@ func EncryptKey(key Key, auth string, scryptN, scryptP int) ([]byte, error) {
 			crypto[i][j] = *c
 		}
 	}
-	encryptedKeyJSONV4 := encryptedKeyJSONV4{
+	encryptedKeyJSONV3 := encryptedKeyJSONV3{
 		hex.EncodeToString(key.GetAddress().Bytes()),
-		crypto,
+		crypto[0][0],
 		key.GetId().String(),
-		4,
+		3,
 	}
-	return json.Marshal(encryptedKeyJSONV4)
+	return json.Marshal(encryptedKeyJSONV3)
 }
 
 // EncryptKeyV3 encrypts a key using the specified scrypt parameters into a json
@@ -337,10 +337,10 @@ func DecryptKey(keyjson []byte, auth string) (Key, error) {
 		}
 	}
 
-	return &KeyV4{
-		Id:          uuid.UUID(keyId),
-		Address:     address,
-		PrivateKeys: privateKeys,
+	return &KeyV3{
+		Id:         uuid.UUID(keyId),
+		Address:    address,
+		PrivateKey: privateKeys[0][0],
 	}, nil
 }
 

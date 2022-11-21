@@ -47,7 +47,7 @@ const (
 	// txMsgCh is the number of list of transactions can be queued.
 	txMsgChSize = 100
 	// MaxTxDataSize is a heuristic limit of tx data size, and txPool rejects transactions over 32KB to prevent DOS attacks.
-	MaxTxDataSize = 32 * 1024
+	MaxTxDataSize = 64 * 1024
 )
 
 var (
@@ -660,24 +660,26 @@ func (pool *TxPool) validateTx(tx *types.Transaction) error {
 			return ErrTipAboveFeeCap
 		}
 
-		if pool.gasPrice.Cmp(tx.GasTipCap()) != 0 {
-			logger.Trace("fail to validate maxPriorityFeePerGas", "unitprice", pool.gasPrice, "maxPriorityFeePerGas", tx.GasFeeCap())
-			return ErrInvalidGasTipCap
-		}
+		// if pool.gasPrice.Cmp(tx.GasTipCap()) != 0 {
+		// 	logger.Trace("fail to validate maxPriorityFeePerGas", "unitprice", pool.gasPrice, "maxPriorityFeePerGas", tx.GasFeeCap())
+		// 	return ErrInvalidGasTipCap
+		// }
 
-		if pool.gasPrice.Cmp(tx.GasFeeCap()) != 0 {
-			logger.Trace("fail to validate maxFeePerGas", "unitprice", pool.gasPrice, "maxFeePerGas", tx.GasTipCap())
-			return ErrInvalidGasFeeCap
-		}
-	} else {
-		if pool.gasPrice.Cmp(tx.GasPrice()) != 0 {
-			logger.Trace("fail to validate unitprice", "unitprice", pool.gasPrice, "txUnitPrice", tx.GasPrice())
-			return ErrInvalidUnitPrice
-		}
+		// if pool.gasPrice.Cmp(tx.GasFeeCap()) != 0 {
+		// 	logger.Trace("fail to validate maxFeePerGas", "unitprice", pool.gasPrice, "maxFeePerGas", tx.GasTipCap())
+		// 	return ErrInvalidGasFeeCap
+		// }
 	}
+	// } else {
+	// 	if pool.gasPrice.Cmp(tx.GasPrice()) != 0 {
+	// 		logger.Trace("fail to validate unitprice", "unitprice", pool.gasPrice, "txUnitPrice", tx.GasPrice())
+	// 		return ErrInvalidUnitPrice
+	// 	}
+	// }
 
 	// Heuristic limit, reject transactions over 32KB to prevent DOS attacks
 	if tx.Size() > MaxTxDataSize {
+		logger.Warn("ignored tx because over MaxTxDataSize", "txSize", tx.Size())
 		return ErrOversizedData
 	}
 

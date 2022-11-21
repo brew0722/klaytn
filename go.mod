@@ -30,9 +30,9 @@ require (
 	github.com/jackpal/go-nat-pmp v1.0.1
 	github.com/jinzhu/gorm v1.9.15
 	github.com/julienschmidt/httprouter v1.2.0
-	github.com/klaytn/xgo v0.0.0-20220420020737-0d7e3e080122 // indirect
-	github.com/mattn/go-colorable v0.1.2
-	github.com/mattn/go-runewidth v0.0.2 // indirect
+	github.com/kr/text v0.2.0 // indirect
+	github.com/mattn/go-colorable v0.1.8
+	github.com/mattn/go-runewidth v0.0.9 // indirect
 	github.com/naoina/go-stringutil v0.1.0 // indirect
 	github.com/naoina/toml v0.1.1
 	github.com/newrelic/go-agent/v3 v3.11.0

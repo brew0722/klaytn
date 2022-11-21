@@ -33,6 +33,7 @@ import (
 	"github.com/klaytn/klaytn/blockchain/types"
 	"github.com/klaytn/klaytn/log"
 	"github.com/klaytn/klaytn/node"
+	"github.com/klaytn/klaytn/node/sc"
 	"github.com/klaytn/klaytn/rlp"
 )
 
@@ -212,6 +213,41 @@ func ExportAppendChain(blockchain *blockchain.BlockChain, fn string, first uint6
 	}
 	logger.Info("Exported blockchain to", "file", fn)
 	return nil
+}
+
+func DecodeRLP(path string) error {
+	// Skip the parsing if the journal file doens't exist at all
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		return nil
+	}
+	// Open the journal for loading any past addresses
+	input, err := os.Open(path)
+	if err != nil {
+		return err
+	}
+	defer input.Close()
+
+	// Inject all addresses from the journal into the pool
+	stream := rlp.NewStream(input, 0)
+	total := 0
+	var (
+		failure error
+	)
+	for {
+		// Parse the next address and terminate on error
+		addr := new(sc.BridgeJournal)
+		if err = stream.Decode(addr); err != nil {
+			if err != io.EOF {
+				failure = err
+			}
+			break
+		}
+
+		total++
+
+	}
+
+	return failure
 }
 
 // TODO-Klaytn Commented out due to mismatched interface.
